@@ -1,6 +1,14 @@
 package agh.ics.oop;
 
+import java.util.Objects;
+
 public record Vector2d(int x, int y) {
+
+    @Override
+    public int x() {return x;}
+
+    @Override
+    public int y() {return y;}
 
     @Override
     public String toString() {
@@ -31,6 +39,12 @@ public record Vector2d(int x, int y) {
         return new Vector2d(x - other.x, y - other.y);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (this == other)
             return true;

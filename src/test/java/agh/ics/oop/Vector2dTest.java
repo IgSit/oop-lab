@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class Vector2dTest {
 
     @Test
-    void testToString() {
+    void ToString() {
         Vector2d example = new Vector2d(1, 2);
         String result = example.toString();
         assertEquals("(1, 2)", result);

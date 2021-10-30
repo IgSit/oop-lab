@@ -10,8 +10,13 @@ public class World {
         System.out.println("Start");
         run(enum_arg);
         System.out.println("Stop"); */
-        Animal animal = new Animal();
-        System.out.println(animal);
+        Animal rover = new Animal();
+        OptionsParser moves = new OptionsParser();
+        MoveDirection[] manual = moves.parse(args);
+        for (MoveDirection step : manual) {
+            rover.move(step);
+        }
+        System.out.println(rover);
     }
 
     public static String[] fixInput(String[] args) {
