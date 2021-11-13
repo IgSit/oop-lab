@@ -5,18 +5,12 @@ import java.util.Arrays;
 
 public class World {
     public static void main(String[] args){
-        /* args = fixInput(args);
-        Direction[] enum_arg = enumerate(args);
-        System.out.println("Start");
-        run(enum_arg);
-        System.out.println("Stop"); */
-        Animal rover = new Animal();
-        OptionsParser moves = new OptionsParser();
-        MoveDirection[] manual = moves.parse(args);
-        for (MoveDirection step : manual) {
-            rover.move(step);
-        }
-        System.out.println(rover);
+        MoveDirection[] directions = new OptionsParser().parse(args);
+        IWorldMap map = new RectangularMap(10, 5);
+        Vector2d[] positions = { new Vector2d(2,2), new Vector2d(3,4) };
+        IEngine engine = new SimulationEngine(directions, map, positions);
+        // System.out.println(map);
+        engine.run();
     }
 
     public static String[] fixInput(String[] args) {

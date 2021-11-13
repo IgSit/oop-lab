@@ -7,12 +7,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class AnimalTest {
 
     @Test
-    void moveApi() {
-        Animal rover1 = new Animal();
-        String[] commands1 = new String[] {"r", "f", "forward", "f"};
+    void move() {
+        RectangularMap map1 = new RectangularMap(5, 5);
+        Animal rover1 = new Animal(map1, new Vector2d(2, 2));
 
-        rover1.moveApi(commands1);
-        Vector2d resPos1 = rover1.getCoordinates();
+        MoveDirection[] moveDirections1 = new  MoveDirection[]
+                {MoveDirection.RIGHT, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD};
+
+        for (MoveDirection direction : moveDirections1)
+            rover1.move(direction);
+
+        Vector2d resPos1 = rover1.getPosition();
         MapDirection resOrient1 = rover1.getOrientation();
 
         Vector2d expectedPos1 = new Vector2d(4, 2);
@@ -23,11 +28,17 @@ class AnimalTest {
 
         // -------------------------------------------------
 
-        Animal rover2 = new Animal();
-        String[] commands2 = new String[] {"backward", "left", "forward", "f", "f", "l", "f", "f"};
+        RectangularMap map2 = new RectangularMap(5, 5);
+        Animal rover2 = new Animal(map2, new Vector2d(2, 2));
 
-        rover2.moveApi(commands2);
-        Vector2d resPos2 = rover2.getCoordinates();
+        MoveDirection[] moveDirections2 = new  MoveDirection[]
+                {MoveDirection.BACKWARD, MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.FORWARD, MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD};
+
+        for (MoveDirection direction : moveDirections2)
+            rover2.move(direction);
+
+        Vector2d resPos2 = rover2.getPosition();
         MapDirection resOrient2 = rover2.getOrientation();
 
         Vector2d expectedPos2 = new Vector2d(0, 0);
@@ -38,11 +49,17 @@ class AnimalTest {
 
         // --------------------------------------------------
 
-        Animal rover3 = new Animal();
-        String[] commands3 = new String[] {"f", "f", "f", "right", "dean", "b", "beer"};
+        RectangularMap map3 = new RectangularMap(5, 5);
+        Animal rover3 = new Animal(map3, new Vector2d(2, 2));
 
-        rover3.moveApi(commands3);
-        Vector2d resPos3 = rover3.getCoordinates();
+        MoveDirection[] moveDirections3 = new  MoveDirection[]
+                {MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.FORWARD, MoveDirection.RIGHT,
+                MoveDirection.BACKWARD};
+
+        for (MoveDirection direction : moveDirections3)
+            rover3.move(direction);
+
+        Vector2d resPos3 = rover3.getPosition();
         MapDirection resOrient3 = rover3.getOrientation();
 
         Vector2d expectedPos3 = new Vector2d(1, 4);

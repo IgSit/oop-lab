@@ -3,54 +3,53 @@ package agh.ics.oop;
 public class Animal {
 
     private MapDirection orientation;
-    private Vector2d coordinates;
+    private Vector2d position;
+    private final IWorldMap map;
 
     public MapDirection getOrientation() {
         return orientation;
     }
 
-    public Vector2d getCoordinates() {
-        return coordinates;
+    public Vector2d getPosition() {
+        return position;
     }
 
-    public Animal() {
+    public Animal(IWorldMap map, Vector2d initialPosition) {
+        this.map = map;
         orientation = MapDirection.NORTH;
-        coordinates = new Vector2d(2, 2);
+        position = initialPosition;
     }
 
     public String toString() {
-        return "Pozycja: " + coordinates + ", Orientacja: " + orientation;
+        return switch (orientation) {
+            case EAST -> "E";
+            case SOUTH -> "S";
+            case WEST -> "W";
+            case NORTH -> "N";
+        };
     }
 
     private Vector2d fixCoordinates() {
-        coordinates = coordinates.lowerLeft(new Vector2d(coordinates.x(), 4));  // wyjście od góry
-        coordinates = coordinates.lowerLeft(new Vector2d(4, coordinates.y()));  // wyjście z prawej
-        coordinates = coordinates.upperRight(new Vector2d(coordinates.x(), 0)); // wyjście z dołu
-        coordinates = coordinates.upperRight(new Vector2d(0, coordinates.y())); // wyjście z lewej
-        return coordinates;
+        position = position.lowerLeft(new Vector2d(position.x(), 4));  // wyjście od góry
+        position = position.lowerLeft(new Vector2d(4, position.y()));  // wyjście z prawej
+        position = position.upperRight(new Vector2d(position.x(), 0)); // wyjście z dołu
+        position = position.upperRight(new Vector2d(0, position.y())); // wyjście z lewej
+        return position;
     }
 
     public void move(MoveDirection direction) {
         switch (direction) {
             case RIGHT -> orientation = orientation.next();
             case LEFT -> orientation = orientation.previous();
-            case FORWARD -> {
-                Vector2d forward = orientation.toUnitVector();
-                coordinates = coordinates.add(forward);
-                coordinates = fixCoordinates();
-            }
-            case BACKWARD -> {
-                Vector2d backward = orientation.toUnitVector();
-                coordinates = coordinates.subtract(backward);
-                coordinates = fixCoordinates();
+            case FORWARD, BACKWARD -> {
+                Vector2d unitVector = orientation.toUnitVector();
+                if (direction == MoveDirection.BACKWARD)
+                    unitVector = unitVector.opposite();
+                Vector2d newPosition = position.add(unitVector);
+                if (map.canMoveTo(newPosition))
+                    position = newPosition;
             }
         }
     }
-    public void moveApi(String[] args) {
-        OptionsParser parser = new OptionsParser();
-        MoveDirection[] manual = parser.parse(args);
-        for (MoveDirection step : manual) this.move(step);
-    }
-
 }
 
