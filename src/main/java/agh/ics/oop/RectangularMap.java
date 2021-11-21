@@ -2,7 +2,7 @@ package agh.ics.oop;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RectangularMap implements IWorldMap{
+public class RectangularMap extends AbstractWorldMap implements IWorldMap{
     private final int width;
     private final int height;
     private final List<Animal> animals;
@@ -38,10 +38,8 @@ public class RectangularMap implements IWorldMap{
         return null;
     }
 
-    @Override
-    public String toString() {
-        MapVisualiser mapVisualiser = new MapVisualiser(this);
-        return mapVisualiser.draw(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
+    public int[] getDimensions() {
+        return new int[] {0, 0, width - 1, height - 1};
     }
 
     private boolean isOutsideTheMap(Vector2d position) {

@@ -28,7 +28,6 @@ public class SimulationEngine implements IEngine{
         for (int i = 0; i < moveDirections.length; i++) {
             Animal movedAnimal = animals.get(i % animalsCount);
             movedAnimal.move(moveDirections[i]);
-            // System.out.println(map);
         }
     }
 }
