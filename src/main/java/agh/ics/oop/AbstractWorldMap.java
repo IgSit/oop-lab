@@ -1,7 +1,14 @@
 package agh.ics.oop;
 
 
-abstract public class AbstractWorldMap implements IWorldMap{
+import java.util.LinkedHashMap;
+
+abstract public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
+    protected final LinkedHashMap<Vector2d, Animal> animals;
+
+    protected AbstractWorldMap() {
+        animals = new LinkedHashMap<>();
+    }
 
     protected abstract int[] getDimensions();
 
@@ -12,5 +19,10 @@ abstract public class AbstractWorldMap implements IWorldMap{
         Vector2d upperRight = new Vector2d(dimensions[2], dimensions[3]);
         MapVisualiser mapVisualiser = new MapVisualiser(this);
         return mapVisualiser.draw(lowerLeft, upperRight);
+    }
+
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        Animal animal = animals.remove(oldPosition);
+        animals.put(newPosition, animal);
     }
 }

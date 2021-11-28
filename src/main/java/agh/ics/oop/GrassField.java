@@ -1,18 +1,19 @@
 package agh.ics.oop;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import static java.lang.Math.*;
 import static java.util.Collections.shuffle;
 
 public class GrassField extends AbstractWorldMap implements IWorldMap {
     private final int grassCounter;
-    private final List<Animal> animals;
-    private final List<Grass> grasses;
+
+    private final LinkedHashMap<Vector2d, Grass> grasses;
 
     public GrassField(int grassCounter) {
+        super();
         this.grassCounter = grassCounter;
-        animals = new ArrayList<>();
         grasses = generateGrass();
     }
 
@@ -24,7 +25,8 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
         Vector2d position = newAnimal.getPosition();
         if (isOccupiedByAnimal(position))
             return false;
-        animals.add(newAnimal);
+        animals.put(position, newAnimal);
+        newAnimal.addObserver(this);
         return true;
     }
 
@@ -45,48 +47,36 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
     *  narysowany obiekt klasy Animal (patrz implementacja MapVisualiser)
     */
     public Object objectAt(Vector2d position) {
-        for (Animal animal : animals) {
-            Vector2d otherPosition = animal.getPosition();
-            if (position.equals(otherPosition))
-                return animal;
-        }
-        for (Grass grass : grasses) {
-            Vector2d otherPosition = grass.getPosition();
-            if (position.equals(otherPosition))
-                return grass;
-        }
+        if (animals.containsKey(position))
+            return animals.get(position);
+        if (grasses.containsKey(position))
+            return grasses.get(position);
         return null;
     }
 
     public void clearGrass() {   // na potrzeby testów
         grasses.clear();
-    }   // na potrzeby testów
+    }
 
     public void addGrass(Grass grass) {   // na potrzeby testów
         if (!isOccupied(grass.getPosition()))
-            grasses.add(grass);
+            grasses.put(grass.getPosition(), grass);
     }
 
     public int[] getDimensions() {
         int maxX = 0, minX = 0, maxY = 0, minY = 0;
-        for (Animal animal : animals) {
-            Vector2d position = animal.getPosition();
-            maxX = max(maxX, position.x());
+        List<Vector2d> positions = new ArrayList<>(animals.keySet());
+        positions.addAll(new ArrayList<>(grasses.keySet()));
+        for (Vector2d position : positions) {
             minX = min(minX, position.x());
-            maxY = max(maxY, position.y());
             minY = min(minY, position.y());
-        }
-        for (Grass grass : grasses) {
-            Vector2d position = grass.getPosition();
             maxX = max(maxX, position.x());
-            minX = min(minX, position.x());
             maxY = max(maxY, position.y());
-            minY = min(minY, position.y());
         }
         return new int[]{minX, minY, maxX, maxY};
     }
 
-    private List<Grass> generateGrass() {
+    private LinkedHashMap<Vector2d, Grass> generateGrass() {
         int maxRange = (int) round(sqrt(grassCounter * 10));
         List<Grass> allCombinations = new ArrayList<>();
         for (int i = 0; i <= maxRange; i++) {
@@ -96,7 +86,11 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
             }
         }
         shuffle(allCombinations);
-        return allCombinations.subList(0, grassCounter);
+        allCombinations = allCombinations.subList(0, grassCounter);
+        LinkedHashMap<Vector2d, Grass> result = new LinkedHashMap<>();
+        for (Grass grass : allCombinations) {
+            result.put(grass.getPosition(), grass);
+        }
+        return result;
     }
-
 }
