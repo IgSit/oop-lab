@@ -40,7 +40,7 @@ class GrassFieldTest {
 
         assertTrue(map.place(a1));
         assertTrue(map.place(a2));
-        assertFalse(map.place(a3));
+        assertThrows(IllegalArgumentException.class, () -> map.place(a3));
     }
 
     @Test

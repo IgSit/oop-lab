@@ -5,24 +5,45 @@ import java.util.LinkedHashMap;
 
 abstract public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
     protected final LinkedHashMap<Vector2d, Animal> animals;
+    protected final MapVisualiser mapVisualiser;
 
     protected AbstractWorldMap() {
         animals = new LinkedHashMap<>();
+        mapVisualiser = new MapVisualiser(this);
     }
 
-    protected abstract int[] getDimensions();
+    protected abstract Vector2d getLowerLeft();
+    protected abstract Vector2d getUpperRight();
 
     @Override
     public String toString() {
-        int[] dimensions = getDimensions();
-        Vector2d lowerLeft = new Vector2d(dimensions[0], dimensions[1]);
-        Vector2d upperRight = new Vector2d(dimensions[2], dimensions[3]);
-        MapVisualiser mapVisualiser = new MapVisualiser(this);
-        return mapVisualiser.draw(lowerLeft, upperRight);
+        return mapVisualiser.draw(this.getLowerLeft(), this.getUpperRight());
     }
 
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
         Animal animal = animals.remove(oldPosition);
         animals.put(newPosition, animal);
+    }
+
+    public boolean isOccupied(Vector2d position) {
+        return objectAt(position) != null;
+    }
+
+    public boolean place(Animal newAnimal) {
+        Vector2d position = newAnimal.getPosition();
+        if (canPlace(position)) {
+            animals.put(position, newAnimal);
+            newAnimal.addObserver(this);
+            return true;
+        }
+        throw new IllegalArgumentException("Position " + position + " is already occupied");
+    }
+
+    public boolean canPlace(Vector2d position) {
+        MapObject mapObject = (MapObject) this.objectAt(position);
+        if (mapObject == null)
+            return true;
+        else
+            return mapObject.canShareSpace();
     }
 }

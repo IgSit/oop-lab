@@ -1,51 +1,18 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Animal {
+public class Animal extends MapObject{
 
     private MapDirection orientation;
-    private Vector2d position;
     private final IWorldMap map;
-    private final List<IPositionChangeObserver> observers;
+
+    public Animal(IWorldMap map, Vector2d initialPosition) {
+        super(initialPosition);
+        this.map = map;
+        orientation = MapDirection.NORTH;
+    }
 
     public MapDirection getOrientation() {
         return orientation;
-    }
-
-    public Vector2d getPosition() {
-        return position;
-    }
-
-    public Animal(IWorldMap map, Vector2d initialPosition) {
-        this.map = map;
-        orientation = MapDirection.NORTH;
-        position = initialPosition;
-        observers = new ArrayList<>();
-    }
-
-    public void addObserver(IPositionChangeObserver observer) {
-        if (!isAObserver(observer))
-            observers.add(observer);
-    }
-
-    public void removeObserver(IPositionChangeObserver observer) {
-        observers.remove(observer);
-    }
-
-    private boolean isAObserver(IPositionChangeObserver observer) {
-        for (IPositionChangeObserver ob : observers) {
-            if (ob == observer)
-                return true;
-        }
-        return false;
-    }
-
-    private void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-        for (IPositionChangeObserver observer : observers) {
-            observer.positionChanged(oldPosition, newPosition);
-        }
     }
 
     @Override
@@ -64,6 +31,10 @@ public class Animal {
         position = position.upperRight(new Vector2d(position.x(), 0)); // wyjście z dołu
         position = position.upperRight(new Vector2d(0, position.y())); // wyjście z lewej
         return position;
+    }
+
+    public boolean canShareSpace() {
+        return false;
     }
 
     public void move(MoveDirection direction) {

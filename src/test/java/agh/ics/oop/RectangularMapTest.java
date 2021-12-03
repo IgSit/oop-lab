@@ -24,7 +24,7 @@ class RectangularMapTest {
         Vector2d position = new Vector2d(2, 2);
 
         assertTrue(map.place(new Animal(map, position)));
-        assertFalse(map.place(new Animal(map, position)));
+        assertThrows(IllegalArgumentException.class, () -> map.place(new Animal(map, position)));
         assertTrue(map.place(new Animal(map, new Vector2d(width - 1, height - 1))));
     }
 
